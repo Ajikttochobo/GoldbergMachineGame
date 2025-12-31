@@ -253,7 +253,6 @@ public class Deploy : MonoBehaviour
                     else
                     {
                         print("투영해서 이동해서 안 부딛힘!");
-
                         targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
                     }
                 }

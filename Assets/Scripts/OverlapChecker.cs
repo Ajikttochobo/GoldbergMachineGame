@@ -22,7 +22,7 @@ public class OverlapChecker : MonoBehaviour //TODO deploy 자체에서 오버랩
         if (transform.parent != null)
         {
             //this.gameObject.SetActive(false);
-            gameObject.layer = LayerMask.NameToLayer("OverlapChecker");
+            gameObject.layer = LayerMask.NameToLayer("OverlapChecker"); //지금 계속 오버랩체커레이어 없다고 난린데 걍 무시하고 오료 고치면 이 코드 없애자
         }
         
         _collider = GetComponent<Collider>();
