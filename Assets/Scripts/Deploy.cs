@@ -201,6 +201,11 @@ public class Deploy : MonoBehaviour
             Physics.SyncTransforms();
                 
             bool isNewHigher = currentPos.y > transform.position.y - halfHeight + 0.01f;
+            
+            Debug.Log($"[디버그] isTouching: {isTouching}, isNewHigher: {isNewHigher}");
+            Debug.Log($"[디버그] if 조건 결과: {!isTouching || isNewHigher}");
+
+            
             if (!isTouching || isNewHigher)
             {
                 targetPosition = new Vector3(
@@ -254,6 +259,23 @@ public class Deploy : MonoBehaviour
                     {
                         print("투영해서 이동해서 안 부딛힘!");
                         targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
+                        // 투영해서 이동해서 안 부딛히면 걍 그 위치로 이동시키고 마는 게 문제인거 같다!!!
+                        transform.position = targetPosition;
+                        Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
+                        prevPos = transform.position;
+                        moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
+                        if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //계산한 방향과 거리로 다시 스윕테스트 실행
+                        {
+                            print("원래 목표 방향으로 다시 이동해서 부딛힘!");
+                            print(sweepHit.transform.name);
+                            targetPosition = prevPos + moveVec.normalized * (sweepHit.distance-0.001f);
+                        }
+                        else
+                        {
+                            print("원래 목표 방향으로 다시 이동해서 안 부딛힘!");
+                            targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
+                        }
+                        
                     }
                 }
                 
