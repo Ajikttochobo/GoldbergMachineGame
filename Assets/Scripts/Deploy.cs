@@ -251,7 +251,7 @@ public class Deploy : MonoBehaviour
                         
                     }
                     
-                    transform.position += new  Vector3(0, 0.001f, 0); //이걸로 해결했다!!!
+                    transform.position += new  Vector3(0, 0.001f, 0); //TODO 이거 하면 안정한 위치에서도 다 불안정하다고 뜸! 전에는 밑에 보정값들 다 없애고 위에 현재위치 미세하게 옮겨서 해결
                     moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
                     if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //계산한 방향과 거리로 다시 스윕테스트 실행
                     {
@@ -266,38 +266,9 @@ public class Deploy : MonoBehaviour
                     }
                     
                 }
-                
-                /*
-                for (int i = 0; i < 3; i++) //TODO 완성시키기 (작동 안하고 겁나 이상하게 됨...)
-                {
-                    // ㅅㅂ 값들중에 루프 밖의 값들 가져오는것들 싹다 루프 안 값에서 가져올수 있게 바꿔야해!!! 특히 dir 랑 dis 아니면 루프 안에서 갱신하던가
-                    if(Vector3.Dot(dir, sweepHit.normal) > 0.999)
-                    {
-                        break;
-                    }
-                    Vector3 newVec = Vector3.ProjectOnPlane((dis - sweepHit.distance)* dir, sweepHit.normal);
-                    transform.position = targetPosition;
-                    targetPosition += newVec;
-                    Physics.SyncTransforms();
-                    if(!(objRigidbody.SweepTest(newVec, out sweepHit, newVec.magnitude + 0.01f)))
-                    {
-                        break;
-                    }
-                    transform.position = targetPosition + dir * (sweepHit.distance - 0.01f); //여기도문제
-                    Physics.SyncTransforms();
-                    newVec = originalTargetPosition - sweepHit.point;
-                    targetPosition = originalTargetPosition;
-                    if(!(objRigidbody.SweepTest(newVec, out sweepHit, newVec.magnitude + 0.01f)))
-                    {
-                        break;
-                    }
-                    dir = newVec.normalized;
-                }
-                */
             }
             
             transform.position = targetPosition;
-            //StartCoroutine(overlapChecker.OverlapCheck(transform.position, transform.rotation));
         }
     }
 
