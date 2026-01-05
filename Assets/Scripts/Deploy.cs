@@ -105,6 +105,14 @@ public class Deploy : MonoBehaviour
         SetTransparent();
         this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
         isDeploy = true;
+        
+        /*
+        objRigidbody.isKinematic = true;
+        objRigidbody.useGravity = false;
+        objRigidbody.interpolation = RigidbodyInterpolation.None;
+        objRigidbody.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        objRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+        */
     }
 
     void DeployEnd()
@@ -216,57 +224,80 @@ public class Deploy : MonoBehaviour
             Physics.SyncTransforms();
             RaycastHit sweepHit;
             Vector3 originalTargetPosition = targetPosition;
+            print(originalTargetPosition);
             
             Vector3 moveVec;
             
-            //단순 미끄러지는거는 성공
-            if(objRigidbody.SweepTest(dir, out sweepHit, dis + 0.001f)) //스윕테스트 실행해서 장애물에 부딛히면
+            //TODO 반복문 안에 넣어서 시도해보자
+            for (int i = 0; i < 3; i++)
             {
-                targetPosition = prevPos + dir * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
-                
-                if(!(Vector3.Dot(dir, sweepHit.normal) > 0.999)) //이동한 방향이 부딛힌 면과 수직이 아니라면
+                //단순 미끄러지는거는 성공
+                if(!objRigidbody.SweepTest(dir, out sweepHit, dis)) //스윕테스트 실행해서 장애물에 안 부딛히면 걍 끝
                 {
-                    moveVec = Vector3.ProjectOnPlane(((dis - sweepHit.distance) + 0.001f)* dir, sweepHit.normal); //남은 이동 거리와 방향을 부딛힌 면의 벡터에 투영해서 이동할 방향과 거리 다시 계산
+                    print("장애물에 안 부딛힘!");
+                    print($"{i} 번쨰 시도만에 끝남!");
+                    transform.position += dir * dis;
+                    break;
+                }
+                targetPosition = prevPos + dir * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
+                if((Vector3.Dot(dir, sweepHit.normal) > 0.999)) //이동한 방향이 부딛힌 면과 수직이면 걍 끝
+                {
+                    print("장애물과 수직!");
+                    print($"{i} 번쨰 시도만에 끝남!");
+                    break;
+                }
+                moveVec = Vector3.ProjectOnPlane(((dis - sweepHit.distance) + 0.001f)* dir, sweepHit.normal); //남은 이동 거리와 방향을 부딛힌 면의 벡터에 투영해서 이동할 방향과 거리 다시 계산
+                transform.position = targetPosition;
+                Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
+                prevPos = transform.position; 
+
+                if(objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //투영해서 계산한 방향과 거리로 다시 스윕테스트 실행
+                {
+                    print("투영해서 이동해서 부딛힘!");
+                    targetPosition = prevPos + moveVec.normalized * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
                     transform.position = targetPosition;
                     Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
-                    prevPos = transform.position; 
-
-                    if(objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //투영해서 계산한 방향과 거리로 다시 스윕테스트 실행
-                    {
-                        print("투영해서 이동해서 부딛힘!");
-                        targetPosition = prevPos + moveVec.normalized * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
-                        transform.position = targetPosition;
-                        Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
-                        moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
-                    }
-                    else
-                    {
-                        print("투영해서 이동해서 안 부딛힘!");
-                        targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
-                        // 투영해서 이동해서 안 부딛히면 걍 그 위치로 이동시키고 마는 게 문제인거 같다!!!
-                        transform.position = targetPosition;
-                        Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
-                        prevPos = transform.position;
+                    moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
+                }
+                else
+                {
+                    print("투영해서 이동해서 안 부딛힘!");
+                    targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
+                    // 투영해서 이동해서 안 부딛히면 걍 그 위치로 이동시키고 마는 게 문제인거 같다!!!
+                    transform.position = targetPosition;
+                    Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
+                    prevPos = transform.position;
 
                         
-                    }
-                    
-                    transform.position += new  Vector3(0, 0.001f, 0); //TODO 이거 하면 안정한 위치에서도 다 불안정하다고 뜸! 전에는 밑에 보정값들 다 없애고 위에 현재위치 미세하게 옮겨서 해결
-                    moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
-                    if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //계산한 방향과 거리로 다시 스윕테스트 실행
-                    {
-                        print("원래 목표 방향으로 다시 이동해서 부딛힘!");
-                        print(sweepHit.transform.name);
-                        targetPosition = transform.position + moveVec.normalized * (sweepHit.distance-0.001f);
-                    }
-                    else
-                    {
-                        print("원래 목표 방향으로 다시 이동해서 안 부딛힘!");
-                        targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
-                    }
-                    
                 }
+                    
+                //전에 여기서 현재 위치 미세하게 올려서 해결했음
+                //if(i >= 1)
+                    //transform.position += new Vector3(0, 0.001f, 0);
+                
+                moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
+                if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude)) //계산한 방향과 거리로 다시 스윕테스트 실행
+                {
+                    print("원래 목표 방향으로 다시 이동해서 부딛힘!");
+                    print(sweepHit.transform.name);
+                    targetPosition = transform.position + moveVec.normalized * (sweepHit.distance-0.001f);
+                }
+                else
+                {
+                    print("원래 목표 방향으로 다시 이동해서 안 부딛힘!");
+                    targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
+                }
+                
+                transform.position = targetPosition;
+                Physics.SyncTransforms();
+                prevPos = transform.position;
+                
+                dir = (originalTargetPosition - prevPos).normalized; //원래 목표 방향으로 가는거로 재설정
+                dis = Vector3.Distance(targetPosition, prevPos);
+                    
             }
+            
+            
             
             transform.position = targetPosition;
         }
