@@ -224,11 +224,9 @@ public class Deploy : MonoBehaviour
             Physics.SyncTransforms();
             RaycastHit sweepHit;
             Vector3 originalTargetPosition = targetPosition;
-            print(originalTargetPosition);
-            
             Vector3 moveVec;
             
-            //TODO 반복문 안에 넣어서 시도해보자
+            //TODO 이거 고치자!!!
             for (int i = 0; i < 3; i++)
             {
                 //단순 미끄러지는거는 성공
@@ -240,16 +238,18 @@ public class Deploy : MonoBehaviour
                     break;
                 }
                 targetPosition = prevPos + dir * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
-                if((Vector3.Dot(dir, sweepHit.normal) > 0.999)) //이동한 방향이 부딛힌 면과 수직이면 걍 끝
+                print($"원래 이동방향 {dir}");
+                moveVec = Vector3.ProjectOnPlane((dis - sweepHit.distance + 0.001f)* dir, sweepHit.normal); //남은 이동 거리와 방향을 부딛힌 면의 벡터에 투영해서 이동할 방향과 거리 다시 계산
+                transform.position = targetPosition;
+                Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
+                prevPos = transform.position;
+
+                if (moveVec.magnitude < 0.001f)
                 {
                     print("장애물과 수직!");
                     print($"{i} 번쨰 시도만에 끝남!");
                     break;
                 }
-                moveVec = Vector3.ProjectOnPlane(((dis - sweepHit.distance) + 0.001f)* dir, sweepHit.normal); //남은 이동 거리와 방향을 부딛힌 면의 벡터에 투영해서 이동할 방향과 거리 다시 계산
-                transform.position = targetPosition;
-                Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
-                prevPos = transform.position; 
 
                 if(objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //투영해서 계산한 방향과 거리로 다시 스윕테스트 실행
                 {
@@ -261,7 +261,12 @@ public class Deploy : MonoBehaviour
                 }
                 else
                 {
-                    print("투영해서 이동해서 안 부딛힘!");
+                    //print("투영해서 이동해서 안 부딛힘!");
+                    //print(moveVec); //TODO 어 이게 (0, 0, 0)인데? 이동 방향이 부딛힌면 노말벡터랑 수직이어서 그렇네?!
+                    print((dis - sweepHit.distance + 0.001f)* dir);
+                    print($"현재랑 목표 위치차이 {transform.position - originalTargetPosition}");
+                    print(isTouching);
+                    
                     targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
                     // 투영해서 이동해서 안 부딛히면 걍 그 위치로 이동시키고 마는 게 문제인거 같다!!!
                     transform.position = targetPosition;
@@ -279,7 +284,6 @@ public class Deploy : MonoBehaviour
                 if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude)) //계산한 방향과 거리로 다시 스윕테스트 실행
                 {
                     print("원래 목표 방향으로 다시 이동해서 부딛힘!");
-                    print(sweepHit.transform.name);
                     targetPosition = transform.position + moveVec.normalized * (sweepHit.distance-0.001f);
                 }
                 else
@@ -292,8 +296,8 @@ public class Deploy : MonoBehaviour
                 Physics.SyncTransforms();
                 prevPos = transform.position;
                 
-                dir = (originalTargetPosition - prevPos).normalized; //원래 목표 방향으로 가는거로 재설정
-                dis = Vector3.Distance(targetPosition, prevPos);
+                dir = (originalTargetPosition - prevPos); //원래 목표 방향으로 가는거로 재설정
+                dis = Vector3.Distance(originalTargetPosition, prevPos);
                     
             }
             
