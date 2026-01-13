@@ -225,8 +225,14 @@ public class Deploy : MonoBehaviour
             RaycastHit sweepHit;
             Vector3 originalTargetPosition = targetPosition;
             Vector3 moveVec;
+
+            //if (isPositionValid(originalTargetPosition, out targetPosition))
+            //{
+            //    return;
+            //}
+
+            isPositionValid(originalTargetPosition, out targetPosition);
             
-            //TODO 이거 고치자!!!
             for (int i = 0; i < 3; i++)
             {
                 //단순 미끄러지는거는 성공
@@ -305,6 +311,13 @@ public class Deploy : MonoBehaviour
             
             transform.position = targetPosition;
         }
+    }
+
+    private bool isPositionValid(Vector3 OriginalTargetPosition, out Vector3 targetPosition)
+    {
+        //TODO 이거 완성하고 작동하는지 확인해보기!
+        targetPosition = OriginalTargetPosition;
+        return false;
     }
 
     private float SetHalfHight()
