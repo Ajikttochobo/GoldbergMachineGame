@@ -26,6 +26,8 @@ public class Deploy : MonoBehaviour
     private bool deploypaused = false;
     private GameObject stableCheckerChildObject;
     private GameObject overLapCheckerChildObject;
+    private Collider stableCheckerChildCollider;
+    private Collider overLapCheckerChildCollider;
     private OverlapChecker overlapChecker;
 
     private Renderer objRenderer;
@@ -75,6 +77,8 @@ public class Deploy : MonoBehaviour
         if (!isStableCheckerChild && !isOverLapCheckerChild)
         {
             overlapChecker = overLapCheckerChildObject.GetComponent<OverlapChecker>();
+            stableCheckerChildCollider = stableCheckerChildObject.GetComponent<Collider>();
+            overLapCheckerChildCollider = overLapCheckerChildObject.GetComponent<Collider>();
         }
     }
     private void Update()
@@ -225,26 +229,27 @@ public class Deploy : MonoBehaviour
             RaycastHit sweepHit;
             Vector3 originalTargetPosition = targetPosition;
             Vector3 moveVec;
+            bool isOriginalPosOk = false;
 
-            //if (isPositionValid(originalTargetPosition, out targetPosition))
-            //{
-            //    return;
-            //}
-
-            isPositionValid(originalTargetPosition, out targetPosition);
+            if (isPositionValid(originalTargetPosition))
+            {
+                print("원래 목표 위치가 유효함!");
+                isOriginalPosOk = true;
+            }
             
             for (int i = 0; i < 3; i++)
             {
+                if (isOriginalPosOk)
+                {
+                    break;
+                }
                 //단순 미끄러지는거는 성공
                 if(!objRigidbody.SweepTest(dir, out sweepHit, dis)) //스윕테스트 실행해서 장애물에 안 부딛히면 걍 끝
                 {
-                    print("장애물에 안 부딛힘!");
-                    print($"{i} 번쨰 시도만에 끝남!");
                     transform.position += dir * dis;
                     break;
                 }
                 targetPosition = prevPos + dir * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
-                print($"원래 이동방향 {dir}");
                 moveVec = Vector3.ProjectOnPlane((dis - sweepHit.distance + 0.001f)* dir, sweepHit.normal); //남은 이동 거리와 방향을 부딛힌 면의 벡터에 투영해서 이동할 방향과 거리 다시 계산
                 transform.position = targetPosition;
                 Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
@@ -252,14 +257,11 @@ public class Deploy : MonoBehaviour
 
                 if (moveVec.magnitude < 0.001f)
                 {
-                    print("장애물과 수직!");
-                    print($"{i} 번쨰 시도만에 끝남!");
                     break;
                 }
 
                 if(objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude + 0.001f)) //투영해서 계산한 방향과 거리로 다시 스윕테스트 실행
                 {
-                    print("투영해서 이동해서 부딛힘!");
                     targetPosition = prevPos + moveVec.normalized * (sweepHit.distance - 0.001f); //목표 지점을 일단 부딛힌 지점으로 설정하고
                     transform.position = targetPosition;
                     Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
@@ -267,19 +269,11 @@ public class Deploy : MonoBehaviour
                 }
                 else
                 {
-                    //print("투영해서 이동해서 안 부딛힘!");
-                    //print(moveVec); //TODO 어 이게 (0, 0, 0)인데? 이동 방향이 부딛힌면 노말벡터랑 수직이어서 그렇네?!
-                    print((dis - sweepHit.distance + 0.001f)* dir);
-                    print($"현재랑 목표 위치차이 {transform.position - originalTargetPosition}");
-                    print(isTouching);
-                    
                     targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
                     // 투영해서 이동해서 안 부딛히면 걍 그 위치로 이동시키고 마는 게 문제인거 같다!!!
                     transform.position = targetPosition;
                     Physics.SyncTransforms(); //일단 스윕테스트에서 부딛힌 지점으로 이동
                     prevPos = transform.position;
-
-                        
                 }
                     
                 //전에 여기서 현재 위치 미세하게 올려서 해결했음
@@ -289,12 +283,10 @@ public class Deploy : MonoBehaviour
                 moveVec = originalTargetPosition - transform.position; //원래 목표 지점으로 이동하는 이동할 방향과 거리 계산
                 if (objRigidbody.SweepTest(moveVec, out sweepHit, moveVec.magnitude)) //계산한 방향과 거리로 다시 스윕테스트 실행
                 {
-                    print("원래 목표 방향으로 다시 이동해서 부딛힘!");
                     targetPosition = transform.position + moveVec.normalized * (sweepHit.distance-0.001f);
                 }
                 else
                 {
-                    print("원래 목표 방향으로 다시 이동해서 안 부딛힘!");
                     targetPosition += moveVec; //안 부딛히면 걍 그 위치로 이동
                 }
                 
@@ -306,24 +298,29 @@ public class Deploy : MonoBehaviour
                 dis = Vector3.Distance(originalTargetPosition, prevPos);
                     
             }
-            
-            
-            
             transform.position = targetPosition;
         }
-    }
-
-    private bool isPositionValid(Vector3 OriginalTargetPosition, out Vector3 targetPosition)
-    {
-        //TODO 이거 완성하고 작동하는지 확인해보기!
-        targetPosition = OriginalTargetPosition;
-        return false;
     }
 
     private float SetHalfHight()
     {
         return objCollider.bounds.extents.y;
         //TODO 다른 콜라이더 종류도 모두 지원하게!
+    }
+    
+    private bool isPositionValid(Vector3 pos) //ㅇㅋ 일단 테스트 코드에서 작동은 하네 TODO 이거 작동하게!
+    {
+        Collider[] colliders = Physics.OverlapBox(pos, objCollider.bounds.extents, Quaternion.identity);
+        float dis;
+        foreach (Collider col in colliders)
+        {
+            if(col == objCollider || col == stableCheckerChildCollider || col == overLapCheckerChildCollider) //stablecheckerchild 콜라이더인지도 확인!
+                continue;
+            Physics.ComputePenetration(objCollider, pos, Quaternion.identity, col, col.transform.position, col.transform.rotation, out _, out dis);
+            if(dis > 0.001f)
+                return true;
+        }
+        return false;
     }
 
     void Rotate()
