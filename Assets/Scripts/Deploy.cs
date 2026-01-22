@@ -10,6 +10,7 @@ public class Deploy : MonoBehaviour
 {
     [Header("material settings")]
     [SerializeField] float alpha = 0.5f; // Default transparency level
+    [SerializeField] string materialName = "_BaseColor";
     [Header("physics settings")]
     [SerializeField] Collider objCollider;
     [SerializeField] Rigidbody objRigidbody;
@@ -98,7 +99,7 @@ public class Deploy : MonoBehaviour
     {
         foreach (Material mat in materials)
         {
-            mat.SetColor("_BaseColor", isStable ? new Color(0f, 1f, 0f, 0.3f) : new Color(1f, 0f, 0f, 0.3f));
+            mat.SetColor(materialName, isStable ? new Color(0f, 1f, 0f, 0.3f) : new Color(1f, 0f, 0f, 0.3f));
         }
     }
 
@@ -127,8 +128,10 @@ public class Deploy : MonoBehaviour
         deployedOnce = false;
         foreach (Material mat in materials)
         {
-            mat.SetColor("_BaseColor", Color.white); //나중에 범용성 높이기 위에 basecolor 말고도 다른거들도 지원시키기!
+            mat.SetColor(materialName, Color.white); //TODO 이거 해도 색이 하얀색으로 안바뀌는거 해결하기 지피티 말로는 setopaque에서 컬러 값을 건드려서 그렇다네
+            //나중에 범용성 높이기 위에 basecolor 말고도 다른거들도 지원시키기!
         }
+        objRenderer.materials = materials;
 
         StableChecker childStableChecker = stableCheckerChildObject.GetComponent<StableChecker>();
         childStableChecker.ChildDeployEnd();
@@ -153,8 +156,8 @@ public class Deploy : MonoBehaviour
 
     void ChildSetting()
     {
-        //Renderer renderer = GetComponent<Renderer>();  
-        //Destroy(renderer);       ...not yet ;)
+        Renderer renderer = GetComponent<Renderer>();  
+        Destroy(renderer); //위에꺼랑 이 코드 지워서 다시 물리 시뮬용 오브젝트들 보이게 함!
         Destroy(this);
         if (isOverLapCheckerChild)
         {
@@ -167,7 +170,7 @@ public class Deploy : MonoBehaviour
         }
     }
     #endregion
-    void MousePosSanp()
+    void MousePosSanp() //TODO 1.collider istrigger false 로 바꿔보기 2.레이어 ignoreraycast 말고 다른거로 바꿔보기 3.목표 위치로 이동했을때 겹치면 다시 계산하게
     {
         bool found = false;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -233,7 +236,6 @@ public class Deploy : MonoBehaviour
 
             if (isPositionValid(originalTargetPosition))
             {
-                print("원래 목표 위치가 유효함!");
                 isOriginalPosOk = true;
             }
             
@@ -308,9 +310,9 @@ public class Deploy : MonoBehaviour
         //TODO 다른 콜라이더 종류도 모두 지원하게!
     }
     
-    private bool isPositionValid(Vector3 pos) //ㅇㅋ 일단 테스트 코드에서 작동은 하네 TODO 이거 작동하게!
+    private bool isPositionValid(Vector3 pos)
     {
-        Collider[] colliders = Physics.OverlapBox(pos, objCollider.bounds.extents, Quaternion.identity);
+        Collider[] colliders = Physics.OverlapBox(pos, objCollider.bounds.extents, transform.rotation);
         float dis;
         foreach (Collider col in colliders)
         {
@@ -318,9 +320,9 @@ public class Deploy : MonoBehaviour
                 continue;
             Physics.ComputePenetration(objCollider, pos, Quaternion.identity, col, col.transform.position, col.transform.rotation, out _, out dis);
             if(dis > 0.001f)
-                return true;
+                return false;
         }
-        return false;
+        return true;
     }
 
     void Rotate()
