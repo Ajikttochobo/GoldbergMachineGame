@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class DeployManager : MonoBehaviour
+public class InventoryButton : MonoBehaviour
 {
-    public DeployObjects[] deployObjects;
-
+    public int ButtonIndex;
+    [HideInInspector] public UIManager uiManager;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -15,12 +16,9 @@ public class DeployManager : MonoBehaviour
     {
         
     }
-}
 
-[System.Serializable]
-public class DeployObjects
-{
-    public string name;
-    public GameObject deployObject;
-    public int count;
+    public void OnSelect()
+    {
+        print("버튼누름!");
+    }
 }
