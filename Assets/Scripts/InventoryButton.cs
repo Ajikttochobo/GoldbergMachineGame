@@ -19,6 +19,6 @@ public class InventoryButton : MonoBehaviour
 
     public void OnSelect()
     {
-        print("버튼누름!");
+        uiManager.OnInventoryButtonPressed(ButtonIndex);
     }
 }

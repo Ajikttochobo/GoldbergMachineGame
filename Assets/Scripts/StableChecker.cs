@@ -67,6 +67,7 @@ public class StableChecker : MonoBehaviour //자체적으로 계속 시뮬을 �
         transform.position = savePos;
         transform.rotation = saveRot;
         rb.isKinematic = true;
+        gameObject.SetActive(false);
     }
     
 }

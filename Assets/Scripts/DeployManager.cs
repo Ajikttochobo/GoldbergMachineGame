@@ -3,6 +3,12 @@ using UnityEngine;
 public class DeployManager : MonoBehaviour
 {
     public DeployObjects[] deployObjects;
+    
+    [SerializeField] UIManager uiManager;
+    [SerializeField] Vector3 initialDeployPos;
+    
+    GameObject DeployingObject = null;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

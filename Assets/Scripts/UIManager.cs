@@ -3,6 +3,8 @@ using Unity.AppUI.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+
 
 public class UIManager : MonoBehaviour
 {
@@ -18,6 +20,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject resetButton;
     
     private InventoryButton[] inventoryButtons;
+    private int? activeButtonIndex = null;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,9 +40,22 @@ public class UIManager : MonoBehaviour
         inventoryButtons = buttonList.ToArray();
     }
 
-    // Update is called once per frame
+    public void OnInventoryButtonPressed(int buttonIndex)
+    {
+        if(buttonIndex == activeButtonIndex)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            activeButtonIndex = null;
+        }
+        else
+        {
+            EventSystem.current.SetSelectedGameObject(inventoryButtons[buttonIndex].gameObject);
+            activeButtonIndex = buttonIndex;
+        }
+    }
+
     void Update()
     {
-        
+        print(activeButtonIndex);
     }
 }
