@@ -20,7 +20,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject resetButton;
     
     private InventoryButton[] inventoryButtons;
-    private int? activeButtonIndex = null;
+    public int? activeInventoryButtonIndex = null;
+    public static bool isGamePlaying = false;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -42,20 +43,20 @@ public class UIManager : MonoBehaviour
 
     public void OnInventoryButtonPressed(int buttonIndex)
     {
-        if(buttonIndex == activeButtonIndex)
+        if(buttonIndex == activeInventoryButtonIndex)
         {
             EventSystem.current.SetSelectedGameObject(null);
-            activeButtonIndex = null;
+            activeInventoryButtonIndex = null;
         }
         else
         {
             EventSystem.current.SetSelectedGameObject(inventoryButtons[buttonIndex].gameObject);
-            activeButtonIndex = buttonIndex;
+            activeInventoryButtonIndex = buttonIndex;
         }
     }
 
     void Update()
     {
-        print(activeButtonIndex);
+        print(activeInventoryButtonIndex);
     }
 }

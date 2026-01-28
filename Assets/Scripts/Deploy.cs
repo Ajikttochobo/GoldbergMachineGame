@@ -14,6 +14,8 @@ public class Deploy : MonoBehaviour
     [Header("physics settings")]
     [SerializeField] Collider objCollider;
     [SerializeField] Rigidbody objRigidbody;
+    [Header("")]
+    [SerializeField] DeployManager deployManager; //TODO 이거 인스펙터에서 적용 안됨
 
     [FormerlySerializedAs("isChild")] [HideInInspector] public bool isStableCheckerChild = false;
     [HideInInspector] public bool isOverLapCheckerChild = false;
@@ -135,7 +137,7 @@ public class Deploy : MonoBehaviour
 
         StableChecker childStableChecker = stableCheckerChildObject.GetComponent<StableChecker>();
         childStableChecker.ChildDeployEnd();
-        
+        deployManager.DeployFinish();
     }
     #endregion
 

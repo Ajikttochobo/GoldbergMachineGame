@@ -489,7 +489,7 @@ MonoBehaviour:
     m_Top: 47
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -1134.54
+  m_Spacing: 9.54
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -568,6 +568,8 @@ MonoBehaviour:
   - name: TestObject
     deployObject: {fileID: 7684496248256373516, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
     count: 0
+  uiManager: {fileID: 330254529}
+  initialDeployPos: {x: 0, y: 1.051, z: -3.076}
 --- !u!4 &511778655
 Transform:
   m_ObjectHideFlags: 0
