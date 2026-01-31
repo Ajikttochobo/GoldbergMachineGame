@@ -26,6 +26,7 @@ public class StableChecker : MonoBehaviour //자체적으로 계속 시뮬을 �
             parentDeploy = transform.parent.GetComponent<Deploy>();
             rb = GetComponent<Rigidbody>();
             col = GetComponent<Collider>();
+            transform.localScale = Vector3.one;
         }
         
     }

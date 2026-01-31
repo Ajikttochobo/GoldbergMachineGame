@@ -19,10 +19,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject pauseButton;
     [SerializeField] GameObject resetButton;
     
-    private InventoryButton[] inventoryButtons;
     public int? activeInventoryButtonIndex = null;
     public static bool isGamePlaying = false;
-
+    
+    private InventoryButton[] inventoryButtons;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,12 +43,12 @@ public class UIManager : MonoBehaviour
 
     public void OnInventoryButtonPressed(int buttonIndex)
     {
-        if(buttonIndex == activeInventoryButtonIndex)
+        if(buttonIndex == activeInventoryButtonIndex) //버튼 눌렀던거 한번 더 눌러서 선택 해제됨
         {
             EventSystem.current.SetSelectedGameObject(null);
             activeInventoryButtonIndex = null;
         }
-        else
+        else //다른 버튼 눌러서 그 버튼 선택
         {
             EventSystem.current.SetSelectedGameObject(inventoryButtons[buttonIndex].gameObject);
             activeInventoryButtonIndex = buttonIndex;
@@ -58,5 +58,10 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         print(activeInventoryButtonIndex);
+        if(Input.GetMouseButtonDown(0))
+        {
+            //여기에 이제 맞는 버튼 다시 선택시켜주는 코드
+            EventSystem.current.SetSelectedGameObject(activeInventoryButtonIndex.HasValue ? inventoryButtons[activeInventoryButtonIndex.Value].gameObject : null);
+        }
     }
 }

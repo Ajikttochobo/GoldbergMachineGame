@@ -15,7 +15,6 @@ public class Deploy : MonoBehaviour
     [SerializeField] Collider objCollider;
     [SerializeField] Rigidbody objRigidbody;
     [Header("")]
-    [SerializeField] DeployManager deployManager; //TODO 이거 인스펙터에서 적용 안됨
 
     [FormerlySerializedAs("isChild")] [HideInInspector] public bool isStableCheckerChild = false;
     [HideInInspector] public bool isOverLapCheckerChild = false;
@@ -32,6 +31,8 @@ public class Deploy : MonoBehaviour
     private Collider stableCheckerChildCollider;
     private Collider overLapCheckerChildCollider;
     private OverlapChecker overlapChecker;
+    private DeployManager deployManager;
+
 
     private Renderer objRenderer;
     private Material[] materials;
@@ -83,6 +84,8 @@ public class Deploy : MonoBehaviour
             stableCheckerChildCollider = stableCheckerChildObject.GetComponent<Collider>();
             overLapCheckerChildCollider = overLapCheckerChildObject.GetComponent<Collider>();
         }
+        
+        deployManager = FindFirstObjectByType<DeployManager>();
     }
     private void Update()
     {
@@ -137,6 +140,7 @@ public class Deploy : MonoBehaviour
 
         StableChecker childStableChecker = stableCheckerChildObject.GetComponent<StableChecker>();
         childStableChecker.ChildDeployEnd();
+        this.gameObject.tag = "Ground";
         deployManager.DeployFinish();
     }
     #endregion
@@ -159,7 +163,7 @@ public class Deploy : MonoBehaviour
     void ChildSetting()
     {
         Renderer renderer = GetComponent<Renderer>();  
-        Destroy(renderer); //위에꺼랑 이 코드 지워서 다시 물리 시뮬용 오브젝트들 보이게 함!
+        //Destroy(renderer); //위에꺼랑 이 코드 지워서 다시 물리 시뮬용 오브젝트들 보이게 함!
         Destroy(this);
         if (isOverLapCheckerChild)
         {

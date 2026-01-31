@@ -567,7 +567,10 @@ MonoBehaviour:
   deployObjects:
   - name: TestObject
     deployObject: {fileID: 7684496248256373516, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
-    count: 0
+    count: 10
+  - name: Domino
+    deployObject: {fileID: 3498443003440029675, guid: a974c5b942069455a8be373a0384cb95, type: 3}
+    count: 20
   uiManager: {fileID: 330254529}
   initialDeployPos: {x: 0, y: 1.051, z: -3.076}
 --- !u!4 &511778655
@@ -964,6 +967,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4480771021470354895, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
+      propertyPath: deployManager
+      value: 
+      objectReference: {fileID: 511778654}
     - target: {fileID: 7084211548114781941, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1007,6 +1014,10 @@ PrefabInstance:
     - target: {fileID: 7684496248256373516, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
       propertyPath: m_Name
       value: TestObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 7684496248256373516, guid: 0f3b97e8520ef48ddb8b5f4c921a6ec4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
