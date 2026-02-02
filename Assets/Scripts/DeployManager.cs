@@ -1,14 +1,15 @@
 using UnityEngine;
 
-public class DeployManager : MonoBehaviour //TODO 인벤토리 안 오브젝트 선택 시스템 뭔가 이상함(동시에 배치될 오브젝트 여러개가 나옴)... 그리고 배치한 오브젝트 위에 다른거 안올라감... <-이거는 stablechecker 오브젝트가 밑에거 뚫고 가서 그런거네 
+public class DeployManager : MonoBehaviour //TODO 선택해제시 오브젝트 삭제 안돼는거 고치기
 {
     public DeployObjects[] deployObjects;
 
     [SerializeField] UIManager uiManager;
     [SerializeField] Vector3 initialDeployPos;
 
+    GameObject PreviewDeployingObject = null;
     GameObject DeployingObject = null;
-    private int? DeployingObjectIndex = null;
+    private int? PreviewDeployingObjectIndex = null;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -22,40 +23,41 @@ public class DeployManager : MonoBehaviour //TODO 인벤토리 안 오브젝트 
     {
         if (!UIManager.isGamePlaying)
             Deploy();
+        print(PreviewDeployingObject);
     }
 
     void Deploy()
     {
-        if (uiManager.activeInventoryButtonIndex == DeployingObjectIndex)
+        if (uiManager.activeInventoryButtonIndex == PreviewDeployingObjectIndex)
         {
             return;
         }
 
         if (uiManager.activeInventoryButtonIndex == null)
         {
-            Destroy(DeployingObject);
-            DeployingObject = null;
-            deployObjects = null;
+            Destroy(PreviewDeployingObject); // 아 여기서 생성된 오브젝트가 아니라 프리팹을 삭제하고 있었네!!! 근데 제대로 하니까 또 배치가 안됌
+            print("여기서 오브젝트 삭제 됬어야 함!");
+            PreviewDeployingObject = null;
+            PreviewDeployingObjectIndex = null;
         }
         else if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count > 0)
         {
-            Destroy(DeployingObject);
+            Destroy(PreviewDeployingObject);
             if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count < 1)
                 return;
-            DeployingObject = uiManager.activeInventoryButtonIndex.HasValue
+            PreviewDeployingObject = uiManager.activeInventoryButtonIndex.HasValue
                 ? deployObjects[uiManager.activeInventoryButtonIndex.Value].deployObject.gameObject
                 : null;
-            DeployingObjectIndex = uiManager.activeInventoryButtonIndex.Value;
-            Instantiate(DeployingObject, initialDeployPos, Quaternion.identity);
+            PreviewDeployingObjectIndex = uiManager.activeInventoryButtonIndex.Value;
+            Instantiate(PreviewDeployingObject, initialDeployPos, Quaternion.identity);
         }
 
     }
 
     public void DeployFinish()
     {
-        print("배치됨!");
         deployObjects[uiManager.activeInventoryButtonIndex.Value].count--;
-        DeployingObjectIndex = null;
+        PreviewDeployingObjectIndex = null;
     }
 
 }

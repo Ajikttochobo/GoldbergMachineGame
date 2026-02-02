@@ -141,6 +141,7 @@ public class Deploy : MonoBehaviour
         StableChecker childStableChecker = stableCheckerChildObject.GetComponent<StableChecker>();
         childStableChecker.ChildDeployEnd();
         this.gameObject.tag = "Ground";
+        objCollider.isTrigger = false;
         deployManager.DeployFinish();
     }
     #endregion

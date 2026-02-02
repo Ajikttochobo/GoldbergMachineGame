@@ -57,7 +57,6 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        print(activeInventoryButtonIndex);
         if(Input.GetMouseButtonDown(0))
         {
             //여기에 이제 맞는 버튼 다시 선택시켜주는 코드
