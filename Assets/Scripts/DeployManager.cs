@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class DeployManager : MonoBehaviour //TODO 선택해제시 오브젝트 삭제 안돼는거 고치기
+public class DeployManager : MonoBehaviour
 {
     public DeployObjects[] deployObjects;
 
     [SerializeField] UIManager uiManager;
     [SerializeField] Vector3 initialDeployPos;
 
-    GameObject PreviewDeployingObject = null;
+    GameObject DeployingObjectPrefab = null;
     GameObject DeployingObject = null;
-    private int? PreviewDeployingObjectIndex = null;
+    private int? DeployingObjectIndex = null;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,33 +23,32 @@ public class DeployManager : MonoBehaviour //TODO 선택해제시 오브젝트 �
     {
         if (!UIManager.isGamePlaying)
             Deploy();
-        print(PreviewDeployingObject);
     }
 
-    void Deploy()
+    void Deploy() //TODO 맞다 그리고 큐브 오브젝트는 괜찮은데 도미노 오브젝트는 다른 오브젝트 위에 올리는게 작동을 안하네
     {
-        if (uiManager.activeInventoryButtonIndex == PreviewDeployingObjectIndex)
+        if (uiManager.activeInventoryButtonIndex == DeployingObjectIndex) //선택되어있는 버튼이 바로 전 버튼과 같으면 걍 끝
         {
             return;
         }
 
-        if (uiManager.activeInventoryButtonIndex == null)
+        if (uiManager.activeInventoryButtonIndex == null) //선택되어 있는 버튼이 없다면
         {
-            Destroy(PreviewDeployingObject); // 아 여기서 생성된 오브젝트가 아니라 프리팹을 삭제하고 있었네!!! 근데 제대로 하니까 또 배치가 안됌
+            Destroy(DeployingObject); // 아 여기서 생성된 오브젝트가 아니라 프리팹을 삭제하고 있었네!!! 근데 제대로 하니까 또 배치가 안됌
             print("여기서 오브젝트 삭제 됬어야 함!");
-            PreviewDeployingObject = null;
-            PreviewDeployingObjectIndex = null;
+            DeployingObjectPrefab = null;
+            DeployingObjectIndex = null;
         }
-        else if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count > 0)
+        else if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count > 0) //새로운 버튼이고 배치할 오브젝트 수가 남아있다면 실행
         {
-            Destroy(PreviewDeployingObject);
-            if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count < 1)
+            Destroy(DeployingObject);
+            if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count < 1) //배치할 오브젝트 수가 남아있지 않다면 끝
                 return;
-            PreviewDeployingObject = uiManager.activeInventoryButtonIndex.HasValue
+            DeployingObjectPrefab = uiManager.activeInventoryButtonIndex.HasValue
                 ? deployObjects[uiManager.activeInventoryButtonIndex.Value].deployObject.gameObject
                 : null;
-            PreviewDeployingObjectIndex = uiManager.activeInventoryButtonIndex.Value;
-            Instantiate(PreviewDeployingObject, initialDeployPos, Quaternion.identity);
+            DeployingObjectIndex = uiManager.activeInventoryButtonIndex.Value;
+            DeployingObject = Instantiate(DeployingObjectPrefab, initialDeployPos, Quaternion.identity);
         }
 
     }
@@ -57,7 +56,8 @@ public class DeployManager : MonoBehaviour //TODO 선택해제시 오브젝트 �
     public void DeployFinish()
     {
         deployObjects[uiManager.activeInventoryButtonIndex.Value].count--;
-        PreviewDeployingObjectIndex = null;
+        DeployingObjectIndex = null;
+        DeployingObject = null;
     }
 
 }
