@@ -6,6 +6,9 @@ using UnityEngine.Serialization;
 
 [RequireComponent(typeof(StableChecker))]
 [RequireComponent(typeof(OverlapChecker))]
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Rigidbody))]
+
 public class Deploy : MonoBehaviour
 {
     [Header("material settings")]

@@ -45,19 +45,24 @@ public class StableChecker : MonoBehaviour //자체적으로 계속 시뮬을 �
         rb.isKinematic = false;
         col.isTrigger = false;
         transform.position = transform.parent.position;
-        transform.rotation = Quaternion.identity;
+        transform.rotation = transform.parent.rotation;
         savePos = transform.position;
         saveRot = transform.rotation;
+        
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        
         for (int i = 0; i < repeat; i++)
             Physics.Simulate(step);
-        bool isSame = transform.position == savePos && transform.rotation == saveRot;
-        isSame = Vector3.Distance(transform.position, savePos) < 0.001f && Quaternion.Angle(transform.rotation, saveRot) < 0.01f; //해보고 값 바꾸기!
-        parentDeploy.isStable = isSame;
+        bool isPosRotSame = transform.position == savePos && transform.rotation == saveRot;
+        isPosRotSame = Vector3.Distance(transform.position, savePos) < 0.001f && Quaternion.Angle(transform.rotation, saveRot) < 0.01f; //해보고 값 바꾸기!
+        bool isVelocityStable = rb.linearVelocity.sqrMagnitude < 0.01f && rb.angularVelocity.magnitude < 0.01f;
+        parentDeploy.isStable = isPosRotSame; //TODO 이거 어떻게 손볼지 고민해봐야 함
         Physics.simulationMode = SimulationMode.FixedUpdate;
         parentDeploy.isStableChange = false;
     }
 
-    void PosRotReset()
+    void PosRotReset() //이거는 왜 만든거지
     { 
         transform.position = savePos;
         transform.rotation = saveRot;
