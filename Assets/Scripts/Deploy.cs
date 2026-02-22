@@ -180,7 +180,8 @@ public class Deploy : MonoBehaviour
         }
     }
     #endregion
-    void MousePosSanp() //TODO 1.collider istrigger false 로 바꿔보기 2.레이어 ignoreraycast 말고 다른거로 바꿔보기 3.목표 위치로 이동했을때 겹치면 다시 계산하게
+    //TODO 1.collider istrigger false 로 바꿔보기 2.레이어 ignoreraycast 말고 다른거로 바꿔보기 3.목표 위치로 이동했을때 겹치면 다시 계산하게
+    void MousePosSanp() 
     {
         bool found = false;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

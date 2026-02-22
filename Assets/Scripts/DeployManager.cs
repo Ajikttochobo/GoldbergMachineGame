@@ -25,7 +25,10 @@ public class DeployManager : MonoBehaviour
             Deploy();
     }
 
-    void Deploy() //TODO 맞다 그리고 큐브 오브젝트는 괜찮은데 도미노 오브젝트는 다른 오브젝트 위에 올리는게 작동을 안하네 그리고 배치하려다가 인벤토리버튼 누르면 걍 거기에서 배치되버리는 문제도 있는듯
+    //TODO 1. 큐브 오브젝트는 괜찮은데 도미노 오브젝트는 다른 오브젝트 위에 올리는게 작동을 안하네
+    //부모 오브젝트랑 overlapchecker(안쓰는 차일드 오브젝트) 콜라이더는 위치가 똑같은데 stablechecker오브젝트는 위치가 살짤 어긋나 있네...
+    //TODO 2.  배치하려다가 인벤토리버튼 누르면 걍 거기에서 배치되버리는 문제도 있는듯
+    void Deploy()
     
     {
         if (uiManager.activeInventoryButtonIndex == DeployingObjectIndex) //선택되어있는 버튼이 바로 전 버튼과 같으면 걍 끝

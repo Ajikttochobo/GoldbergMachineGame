@@ -15,8 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject inventoryButtonPrefab;
     
     [Header("GamePlayButtons")]
-    [SerializeField] GameObject playButton;
-    [SerializeField] GameObject pauseButton;
+    [SerializeField] GameObject playPauseButton;
     [SerializeField] GameObject resetButton;
     
     public int? activeInventoryButtonIndex = null;
@@ -53,6 +52,17 @@ public class UIManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(inventoryButtons[buttonIndex].gameObject);
             activeInventoryButtonIndex = buttonIndex;
         }
+    }
+    
+    //TODO 이 두개 구현하기!
+    public void OnPlayPauseButtonPressed()
+    {
+        
+    }
+
+    public void OnResetButtonPressed()
+    {
+        
     }
 
     void Update()
