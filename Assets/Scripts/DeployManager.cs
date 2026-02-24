@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DeployManager : MonoBehaviour
 {
@@ -11,11 +13,14 @@ public class DeployManager : MonoBehaviour
     GameObject DeployingObject = null;
     private int? DeployingObjectIndex = null;
 
+    private List<DeployedObject> DeployedObjects;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
-
+        uiManager.OnPlayPauseButtonPressed.AddListener(PlayPauseButtonFunc);
+        uiManager.OnResetButtonPressed.AddListener(ResetButtonFunc);
+        
+        DeployedObjects = new List<DeployedObject>();
     }
 
     // Update is called once per frame
@@ -27,7 +32,7 @@ public class DeployManager : MonoBehaviour
 
     //TODO 1. 큐브 오브젝트는 괜찮은데 도미노 오브젝트는 다른 오브젝트 위에 올리는게 작동을 안하네
     //부모 오브젝트랑 overlapchecker(안쓰는 차일드 오브젝트) 콜라이더는 위치가 똑같은데 stablechecker오브젝트는 위치가 살짤 어긋나 있네...
-    //TODO 2.  배치하려다가 인벤토리버튼 누르면 걍 거기에서 배치되버리는 문제도 있는듯
+    //TODO 2.  배치하려다가 인벤토리버튼 누르면 걍 거기에서 배치되버리는 문제도 있는듯 이거 전에 문제 리셋되서 다 날라가서 이러는건가? <- 이건 아닌듯
     void Deploy()
     
     {
@@ -38,8 +43,7 @@ public class DeployManager : MonoBehaviour
 
         if (uiManager.activeInventoryButtonIndex == null) //선택되어 있는 버튼이 없다면
         {
-            Destroy(DeployingObject); // 아 여기서 생성된 오브젝트가 아니라 프리팹을 삭제하고 있었네!!! 근데 제대로 하니까 또 배치가 안됌
-            print("여기서 오브젝트 삭제 됬어야 함!");
+            Destroy(DeployingObject);
             DeployingObjectPrefab = null;
             DeployingObjectIndex = null;
         }
@@ -49,7 +53,7 @@ public class DeployManager : MonoBehaviour
             if(deployObjects[uiManager.activeInventoryButtonIndex.Value].count < 1) //배치할 오브젝트 수가 남아있지 않다면 끝
                 return;
             DeployingObjectPrefab = uiManager.activeInventoryButtonIndex.HasValue
-                ? deployObjects[uiManager.activeInventoryButtonIndex.Value].deployObject.gameObject
+                ? deployObjects[uiManager.activeInventoryButtonIndex.Value].deployObjectPrefab.gameObject
                 : null;
             DeployingObjectIndex = uiManager.activeInventoryButtonIndex.Value;
             DeployingObject = Instantiate(DeployingObjectPrefab, initialDeployPos, Quaternion.identity);
@@ -57,11 +61,36 @@ public class DeployManager : MonoBehaviour
 
     }
 
-    public void DeployFinish()
+    public void DeployFinish(GameObject obj)
     {
+        if (deployObjects[uiManager.activeInventoryButtonIndex.Value].initialCount == 0)
+            deployObjects[uiManager.activeInventoryButtonIndex.Value].initialCount = deployObjects[uiManager.activeInventoryButtonIndex.Value].count;
         deployObjects[uiManager.activeInventoryButtonIndex.Value].count--;
         DeployingObjectIndex = null;
         DeployingObject = null;
+
+        DeployedObject deployedObject = new DeployedObject();
+        deployedObject.Object = obj;
+        deployedObject.Transform = obj.transform;
+        DeployedObjects.Add(deployedObject);
+    }
+
+    private void PlayPauseButtonFunc()
+    {
+        
+    }
+
+    private void ResetButtonFunc()
+    {
+        foreach (DeployedObject deployedObject in DeployedObjects)
+        {
+            Destroy(deployedObject.Object);
+        }
+        DeployedObjects.Clear();
+        foreach (DeployObjects deployedObject in deployObjects)
+        {
+            deployedObject.count = deployedObject.initialCount;
+        }
     }
 
 }
@@ -70,6 +99,14 @@ public class DeployManager : MonoBehaviour
 public class DeployObjects
 {
     public string name;
-    public GameObject deployObject;
+    [FormerlySerializedAs("deployObject")] public GameObject deployObjectPrefab;
     public int count;
+    [HideInInspector] public int initialCount = 0;
+}
+
+[System.Serializable]
+public class DeployedObject
+{
+    public GameObject Object;
+    public Transform Transform;
 }

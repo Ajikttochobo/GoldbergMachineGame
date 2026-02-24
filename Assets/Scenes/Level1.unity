@@ -151,8 +151,16 @@ MonoBehaviour:
   deployManager: {fileID: 511778654}
   InventoryPanel: {fileID: 447043142}
   inventoryButtonPrefab: {fileID: 8082207230488527890, guid: 8cebb22001bd546f79a895d03c4a9ec6, type: 3}
-  playPauseButton: {fileID: 0}
-  resetButton: {fileID: 0}
+  playPauseButton: {fileID: 1770585230}
+  playSprite: {fileID: 1369188451, guid: 5ecc990b03ff44fb9a1ec0abc1156fd5, type: 3}
+  pauseSprite: {fileID: -2139889534, guid: 5ecc990b03ff44fb9a1ec0abc1156fd5, type: 3}
+  resetButton: {fileID: 441946841}
+  OnPlayPauseButtonPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnResetButtonPressed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &330254530
 Transform:
   m_ObjectHideFlags: 0
@@ -516,7 +524,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 330254529}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnResetButtonPressed
+        m_MethodName: ResetButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -988,6 +996,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1018239172
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1018239174}
+  - component: {fileID: 1018239173}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1018239173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018239172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22b361ff869a0444f9f4f96d2bcf5956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  isPlayMode: 0
+--- !u!4 &1018239174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018239172}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.49549, y: 2.20026, z: 2.8345}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1569392558
 GameObject:
   m_ObjectHideFlags: 0
@@ -1176,7 +1229,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 330254529}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnPlayPauseButtonPressed
+        m_MethodName: PlayPauseButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1234,5 +1287,6 @@ SceneRoots:
   - {fileID: 1569392562}
   - {fileID: 330254530}
   - {fileID: 511778655}
+  - {fileID: 1018239174}
   - {fileID: 817330938}
   - {fileID: 815503222}

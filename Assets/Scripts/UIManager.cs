@@ -1,10 +1,15 @@
+using System;
 using TMPro;
 using Unity.AppUI.UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
-
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Image = UnityEngine.UI.Image;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,12 +21,19 @@ public class UIManager : MonoBehaviour
     
     [Header("GamePlayButtons")]
     [SerializeField] GameObject playPauseButton;
+    [SerializeField] Sprite playSprite;
+    [SerializeField] Sprite pauseSprite;
     [SerializeField] GameObject resetButton;
     
     public int? activeInventoryButtonIndex = null;
     public static bool isGamePlaying = false;
     
     private InventoryButton[] inventoryButtons;
+    
+    //TODO 이 두개 구현하기
+    public UnityEvent OnPlayPauseButtonPressed;
+    public UnityEvent OnResetButtonPressed;
+    private Image playPauseButtonImage;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -38,6 +50,13 @@ public class UIManager : MonoBehaviour
         }
         
         inventoryButtons = buttonList.ToArray();
+        playPauseButtonImage = playPauseButton.GetComponent<Image>();
+    }
+
+    private void OnEnable()
+    {
+        OnPlayPauseButtonPressed.AddListener(PlayPauseButtonFunc);
+        OnResetButtonPressed.AddListener(ResetButtonFunc);
     }
 
     public void OnInventoryButtonPressed(int buttonIndex)
@@ -53,18 +72,40 @@ public class UIManager : MonoBehaviour
             activeInventoryButtonIndex = buttonIndex;
         }
     }
+
+    public void PlayPauseButtonPressed()
+    {
+        OnPlayPauseButtonPressed?.Invoke();
+    }
+
+    public void ResetButtonPressed()
+    {
+        OnResetButtonPressed?.Invoke();
+    }
     
-    //TODO 이 두개 구현하기!
-    public void OnPlayPauseButtonPressed()
+    private void PlayPauseButtonFunc()
     {
-        
+        print("Play Pause Button");
+        if (playPauseButtonImage.sprite == playSprite)
+        {
+            //play 상태로 바꿔야 함
+            playPauseButtonImage.sprite = pauseSprite;
+            resetButton.SetActive(false);
+        }
+        else
+        {
+            //pause 상태로 바꿔야 함
+            playPauseButtonImage.sprite = playSprite;
+            resetButton.SetActive(true);
+
+        }
     }
 
-    public void OnResetButtonPressed()
+    private void ResetButtonFunc()
     {
-        
+        print("Reset Button");
     }
-
+    
     void Update()
     {
         if(Input.GetMouseButtonDown(0))

@@ -145,7 +145,7 @@ public class Deploy : MonoBehaviour
         childStableChecker.ChildDeployEnd();
         this.gameObject.tag = "Ground";
         objCollider.isTrigger = false;
-        deployManager.DeployFinish();
+        deployManager.DeployFinish(this.gameObject);
     }
     #endregion
 
@@ -340,6 +340,17 @@ public class Deploy : MonoBehaviour
     {
         //TODO 구현하기!
         //deploypaused = true;
+    }
+
+    //TODO 이 두개 구현
+    public void EnterPlayMode()
+    {
+        
+    }
+
+    public void ExitPlayMode()
+    {
+        
     }
     
     #region Transparent&Opaque
