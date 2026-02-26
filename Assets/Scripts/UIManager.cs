@@ -1,14 +1,9 @@
 using System;
 using TMPro;
-using Unity.AppUI.UI;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
 public class UIManager : MonoBehaviour
@@ -26,13 +21,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject resetButton;
     
     public int? activeInventoryButtonIndex = null;
+    
     public static bool isGamePlaying = false;
     
     private InventoryButton[] inventoryButtons;
     
     //TODO 이 두개 구현하기
-    public UnityEvent OnPlayPauseButtonPressed;
-    public UnityEvent OnResetButtonPressed;
+    [HideInInspector] public UnityEvent OnPlayPauseButtonPressed; //TODO 어 왜 갑자기 이벤트가 작동을 안하냐
+    [HideInInspector] public UnityEvent OnResetButtonPressed;
     private Image playPauseButtonImage;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -86,6 +82,7 @@ public class UIManager : MonoBehaviour
     private void PlayPauseButtonFunc()
     {
         print("Play Pause Button");
+        isGamePlaying = !isGamePlaying;
         if (playPauseButtonImage.sprite == playSprite)
         {
             //play 상태로 바꿔야 함

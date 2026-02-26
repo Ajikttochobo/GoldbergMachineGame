@@ -23,6 +23,15 @@ public class DeployManager : MonoBehaviour
         DeployedObjects = new List<DeployedObject>();
     }
 
+    void Start()
+    {
+        foreach (DeployObjects deployObject in deployObjects)
+        {
+            if (deployObject.initialCount == 0)
+                deployObject.initialCount = deployObject.count;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -63,8 +72,6 @@ public class DeployManager : MonoBehaviour
 
     public void DeployFinish(GameObject obj)
     {
-        if (deployObjects[uiManager.activeInventoryButtonIndex.Value].initialCount == 0)
-            deployObjects[uiManager.activeInventoryButtonIndex.Value].initialCount = deployObjects[uiManager.activeInventoryButtonIndex.Value].count;
         deployObjects[uiManager.activeInventoryButtonIndex.Value].count--;
         DeployingObjectIndex = null;
         DeployingObject = null;
@@ -77,7 +84,7 @@ public class DeployManager : MonoBehaviour
 
     private void PlayPauseButtonFunc()
     {
-        
+
     }
 
     private void ResetButtonFunc()

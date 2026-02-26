@@ -44,6 +44,8 @@ public class Deploy : MonoBehaviour
     private int contactCount = 0;
     private int ignoreLayer;
     private RaycastHit rayHit;
+    
+    private bool isPlayMode = false;
 
 
     void OnTriggerEnter(Collider other)
@@ -87,9 +89,13 @@ public class Deploy : MonoBehaviour
             stableCheckerChildCollider = stableCheckerChildObject.GetComponent<Collider>();
             overLapCheckerChildCollider = overLapCheckerChildObject.GetComponent<Collider>();
         }
-        
+    }
+
+    private void OnEnable()
+    {
         deployManager = FindFirstObjectByType<DeployManager>();
     }
+
     private void Update()
     {
         if (isDeploy && !deploypaused)
@@ -342,15 +348,26 @@ public class Deploy : MonoBehaviour
         //deploypaused = true;
     }
 
-    //TODO 이 두개 구현
-    public void EnterPlayMode()
+    private void playButtonPressed()
     {
+        if(UIManager.isGamePlaying == true)
+            EnterPlayMode();
+        else
+            ExitPlayMode();
+    }
+    
+    //TODO 이 두개 구현
+    private void EnterPlayMode()
+    {
+        if(isDeploy)
+            Destroy(this.gameObject); //TODO 이거 오브젝트가 안정된 상태에 있으면 안없어지고 걍 배치되버림 
+        print("Enter Play Mode");
         
     }
 
-    public void ExitPlayMode()
+    private void ExitPlayMode()
     {
-        
+        print("Exit Play Mode");
     }
     
     #region Transparent&Opaque
