@@ -17,7 +17,7 @@ public class DeployManager : MonoBehaviour
 
     void OnEnable()
     {
-        uiManager.OnPlayPauseButtonPressed.AddListener(PlayPauseButtonFunc);
+        uiManager.OnPlayPauseButtonPressed.AddListener(PauseButtonFunc);
         uiManager.OnResetButtonPressed.AddListener(ResetButtonFunc);
         
         DeployedObjects = new List<DeployedObject>();
@@ -82,9 +82,11 @@ public class DeployManager : MonoBehaviour
         DeployedObjects.Add(deployedObject);
     }
 
-    private void PlayPauseButtonFunc()
+    private void PauseButtonFunc()
     {
-
+        if(UIManager.isGamePlaying)
+            return;
+        print("이제 게임 모드 꺼진거 맞지?");
     }
 
     private void ResetButtonFunc()

@@ -35,7 +35,9 @@ public class Deploy : MonoBehaviour
     private Collider overLapCheckerChildCollider;
     private OverlapChecker overlapChecker;
     private DeployManager deployManager;
-
+    private UIManager uiManager;
+    private Vector3 originalPos;
+    private Quaternion originalRot;
 
     private Renderer objRenderer;
     private Material[] materials;
@@ -94,6 +96,9 @@ public class Deploy : MonoBehaviour
     private void OnEnable()
     {
         deployManager = FindFirstObjectByType<DeployManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        
+        uiManager.OnPlayPauseButtonPressed.AddListener(playButtonPressed);
     }
 
     private void Update()
@@ -152,6 +157,9 @@ public class Deploy : MonoBehaviour
         this.gameObject.tag = "Ground";
         objCollider.isTrigger = false;
         deployManager.DeployFinish(this.gameObject);
+        
+        originalPos = transform.position;
+        originalRot = transform.rotation;
     }
     #endregion
 
@@ -350,7 +358,7 @@ public class Deploy : MonoBehaviour
 
     private void playButtonPressed()
     {
-        if(UIManager.isGamePlaying == true)
+        if(UIManager.isGamePlaying)
             EnterPlayMode();
         else
             ExitPlayMode();
@@ -363,11 +371,19 @@ public class Deploy : MonoBehaviour
             Destroy(this.gameObject); //TODO 이거 오브젝트가 안정된 상태에 있으면 안없어지고 걍 배치되버림 
         print("Enter Play Mode");
         
+        objRigidbody.isKinematic = false;
+        
     }
 
     private void ExitPlayMode()
     {
         print("Exit Play Mode");
+        
+        objRigidbody.isKinematic = true;
+        objRigidbody.linearVelocity = Vector3.zero;
+        
+        transform.position = originalPos;
+        transform.rotation = originalRot;
     }
     
     #region Transparent&Opaque

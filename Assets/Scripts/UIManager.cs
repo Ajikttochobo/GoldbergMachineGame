@@ -26,8 +26,7 @@ public class UIManager : MonoBehaviour
     
     private InventoryButton[] inventoryButtons;
     
-    //TODO 이 두개 구현하기
-    [HideInInspector] public UnityEvent OnPlayPauseButtonPressed; //TODO 어 왜 갑자기 이벤트가 작동을 안하냐
+    [HideInInspector] public UnityEvent OnPlayPauseButtonPressed;
     [HideInInspector] public UnityEvent OnResetButtonPressed;
     private Image playPauseButtonImage;
     
@@ -71,6 +70,7 @@ public class UIManager : MonoBehaviour
 
     public void PlayPauseButtonPressed()
     {
+        isGamePlaying = !isGamePlaying;
         OnPlayPauseButtonPressed?.Invoke();
     }
 
@@ -82,18 +82,22 @@ public class UIManager : MonoBehaviour
     private void PlayPauseButtonFunc()
     {
         print("Play Pause Button");
-        isGamePlaying = !isGamePlaying;
         if (playPauseButtonImage.sprite == playSprite)
         {
             //play 상태로 바꿔야 함
             playPauseButtonImage.sprite = pauseSprite;
+            
+            EventSystem.current.SetSelectedGameObject(null);
             resetButton.SetActive(false);
+            InventoryPanel.SetActive(false);
         }
         else
         {
             //pause 상태로 바꿔야 함
             playPauseButtonImage.sprite = playSprite;
+            
             resetButton.SetActive(true);
+            InventoryPanel.SetActive(true);
 
         }
     }
@@ -105,10 +109,11 @@ public class UIManager : MonoBehaviour
     
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0)) //TODO 아니 또 왜 플레이모드 끝나면 버튼 선택되어 있는건데
         {
-            //여기에 이제 맞는 버튼 다시 선택시켜주는 코드
-            EventSystem.current.SetSelectedGameObject(activeInventoryButtonIndex.HasValue ? inventoryButtons[activeInventoryButtonIndex.Value].gameObject : null);
+            EventSystem.current.SetSelectedGameObject(activeInventoryButtonIndex.HasValue && !isGamePlaying ? inventoryButtons[activeInventoryButtonIndex.Value].gameObject : null);
         }
+        
+        print(isGamePlaying);
     }
 }
