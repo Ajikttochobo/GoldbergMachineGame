@@ -57,7 +57,7 @@ public class StableChecker : MonoBehaviour //자체적으로 계속 시뮬을 �
         bool isPosRotSame = transform.position == savePos && transform.rotation == saveRot;
         isPosRotSame = Vector3.Distance(transform.position, savePos) < 0.001f && Quaternion.Angle(transform.rotation, saveRot) < 0.01f; //해보고 값 바꾸기!
         bool isVelocityStable = rb.linearVelocity.sqrMagnitude < 0.01f && rb.angularVelocity.magnitude < 0.01f;
-        parentDeploy.isStable = isPosRotSame; //TODO 원래 코드는 isposrotsame 쓰는거였는데 이거 그대로 쓸지 isvelocitystable 쓸지 둘다 쓸지 고민해봐야함
+        parentDeploy.isStable = isPosRotSame; //원래 코드는 isposrotsame 쓰는거였는데 이거 그대로 쓸지 isvelocitystable 쓸지 둘다 쓸지 고민해봐야함
         Physics.simulationMode = SimulationMode.FixedUpdate;
         parentDeploy.isStableChange = false;
     }

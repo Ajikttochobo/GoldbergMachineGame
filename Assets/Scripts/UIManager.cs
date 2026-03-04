@@ -18,7 +18,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject playPauseButton;
     [SerializeField] Sprite playSprite;
     [SerializeField] Sprite pauseSprite;
-    [SerializeField] GameObject resetButton;
+    [SerializeField] private GameObject resetButton;
+
+    [SerializeField] private GameObject[] hideOnPlayMode;
     
     public int? activeInventoryButtonIndex = null;
     
@@ -81,39 +83,40 @@ public class UIManager : MonoBehaviour
     
     private void PlayPauseButtonFunc()
     {
-        print("Play Pause Button");
         if (playPauseButtonImage.sprite == playSprite)
         {
             //play 상태로 바꿔야 함
             playPauseButtonImage.sprite = pauseSprite;
             
             EventSystem.current.SetSelectedGameObject(null);
-            resetButton.SetActive(false);
-            InventoryPanel.SetActive(false);
+            activeInventoryButtonIndex = null;
+            foreach (GameObject obj in hideOnPlayMode)
+            {
+                obj.SetActive(false);
+            }
         }
         else
         {
             //pause 상태로 바꿔야 함
             playPauseButtonImage.sprite = playSprite;
             
-            resetButton.SetActive(true);
-            InventoryPanel.SetActive(true);
-
+            foreach (GameObject obj in hideOnPlayMode)
+            {
+                obj.SetActive(true);
+            }
         }
     }
 
     private void ResetButtonFunc()
     {
-        print("Reset Button");
+        
     }
     
     void Update()
     {
-        if(Input.GetMouseButtonDown(0)) //TODO 아니 또 왜 플레이모드 끝나면 버튼 선택되어 있는건데
+        if(Input.GetMouseButtonDown(0))
         {
             EventSystem.current.SetSelectedGameObject(activeInventoryButtonIndex.HasValue && !isGamePlaying ? inventoryButtons[activeInventoryButtonIndex.Value].gameObject : null);
         }
-        
-        print(isGamePlaying);
     }
 }

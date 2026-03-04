@@ -181,7 +181,7 @@ public class Deploy : MonoBehaviour
     void ChildSetting()
     {
         Renderer renderer = GetComponent<Renderer>();  
-        //Destroy(renderer); //위에꺼랑 이 코드 지워서 다시 물리 시뮬용 오브젝트들 보이게 함!
+        Destroy(renderer); //위에꺼랑 이 코드 지워서 다시 물리 시뮬용 오브젝트들 보이게 함!
         Destroy(this);
         if (isOverLapCheckerChild)
         {
@@ -194,7 +194,8 @@ public class Deploy : MonoBehaviour
         }
     }
     #endregion
-    //TODO 1.collider istrigger false 로 바꿔보기 2.레이어 ignoreraycast 말고 다른거로 바꿔보기 3.목표 위치로 이동했을때 겹치면 다시 계산하게
+    
+    //TODO 도미노 오브젝트 배치되면 약간 불안정해서 틀어지는거 해결하기 (배치 직후 잠깐 kinematic으로 전환?)
     void MousePosSanp() 
     {
         bool found = false;
@@ -364,12 +365,10 @@ public class Deploy : MonoBehaviour
             ExitPlayMode();
     }
     
-    //TODO 이 두개 구현
     private void EnterPlayMode()
     {
         if(isDeploy)
             Destroy(this.gameObject); //TODO 이거 오브젝트가 안정된 상태에 있으면 안없어지고 걍 배치되버림 
-        print("Enter Play Mode");
         
         objRigidbody.isKinematic = false;
         
@@ -377,8 +376,6 @@ public class Deploy : MonoBehaviour
 
     private void ExitPlayMode()
     {
-        print("Exit Play Mode");
-        
         objRigidbody.isKinematic = true;
         objRigidbody.linearVelocity = Vector3.zero;
         
