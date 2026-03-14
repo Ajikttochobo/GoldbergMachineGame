@@ -52,6 +52,10 @@ public class StableChecker : MonoBehaviour //자체적으로 계속 시뮬을 �
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         
+        rb.isKinematic = true;
+        Physics.SyncTransforms();
+        rb.isKinematic = false; //효과 진짜살짝있음
+        
         for (int i = 0; i < repeat; i++)
             Physics.Simulate(step);
         bool isPosRotSame = transform.position == savePos && transform.rotation == saveRot;

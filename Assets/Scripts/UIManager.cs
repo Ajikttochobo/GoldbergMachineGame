@@ -9,6 +9,7 @@ using Image = UnityEngine.UI.Image;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] DeployManager deployManager;
+    [SerializeField] GameManager gameManager;
     
     [Header("InventorySettings")]
     [SerializeField] GameObject InventoryPanel;
@@ -20,6 +21,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Sprite pauseSprite;
     [SerializeField] private GameObject resetButton;
 
+    [Header("")]
+    [SerializeField] GameObject levelCompletePanel;
     [SerializeField] private GameObject[] hideOnPlayMode;
     
     public int? activeInventoryButtonIndex = null;
@@ -80,6 +83,17 @@ public class UIManager : MonoBehaviour
     {
         OnResetButtonPressed?.Invoke();
     }
+
+    public void BackToMenuButtonPressed()
+    {
+        gameManager.MainMenu();
+    }
+
+    public void NextLevelButtonPressed()
+    {
+        gameManager.NextLevel();
+        print("다음 레벨?");
+    }
     
     private void PlayPauseButtonFunc()
     {
@@ -110,6 +124,11 @@ public class UIManager : MonoBehaviour
     private void ResetButtonFunc()
     {
         
+    }
+
+    public void LevelComplete()
+    {
+        levelCompletePanel.SetActive(true);
     }
     
     void Update()

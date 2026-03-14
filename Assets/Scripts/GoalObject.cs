@@ -3,11 +3,20 @@ using UnityEngine;
 
 public class GoalObject : MonoBehaviour
 {
-    [SerializeField] Collider _collider;
+    private UIManager _uiManager;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnEnable()
+    {
+        _uiManager = FindAnyObjectByType<UIManager>();
+    }
+
+    private void OnCollisionEnter()
     {
         if (UIManager.isGamePlaying)
-            print("bruh");
+        {
+            Time.timeScale = 0;
+            _uiManager.LevelComplete();
+        }
+            
     }
 }
