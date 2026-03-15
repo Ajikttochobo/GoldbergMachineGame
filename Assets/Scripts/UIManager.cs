@@ -92,7 +92,6 @@ public class UIManager : MonoBehaviour
     public void NextLevelButtonPressed()
     {
         gameManager.NextLevel();
-        print("다음 레벨?");
     }
     
     private void PlayPauseButtonFunc()

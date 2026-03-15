@@ -116,6 +116,8 @@ public class Deploy : MonoBehaviour
 
     private void ShowStableState()
     {
+        if(!isDeploy)
+            return;
         foreach (Material mat in materials)
         {
             mat.SetColor(materialName, isStable ? new Color(0f, 1f, 0f, 0.3f) : new Color(1f, 0f, 0f, 0.3f));
@@ -174,7 +176,6 @@ public class Deploy : MonoBehaviour
             overLapCheckerChildObject = Instantiate(this.gameObject, this.transform.position, this.transform.rotation, this.transform);
             childObjDeployer = overLapCheckerChildObject.GetComponent<Deploy>();
             childObjDeployer.isOverLapCheckerChild = true;
-            overLapCheckerChildObject.layer = LayerMask.NameToLayer("OverlapChecker");
         }
     }
 
