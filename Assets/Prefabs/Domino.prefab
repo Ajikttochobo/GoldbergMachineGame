@@ -135,6 +135,8 @@ MonoBehaviour:
   materialName: _BaseColor
   objCollider: {fileID: -6807156977734259915}
   objRigidbody: {fileID: -3376066133895868614}
+  rotateHight: 0.5
+  sensitivity: 2.5
   isStableCheckerChild: 0
   isOverLapCheckerChild: 0
   isStable: 1

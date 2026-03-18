@@ -1727,9 +1727,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1018239172}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22b361ff869a0444f9f4f96d2bcf5956, type: 3}
+  m_Script: {fileID: 11500000, guid: 215e8d31f20ea49639ed9d05a2733dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  nextLevel: 
+  mainMenu: 
 --- !u!4 &1018239174
 Transform:
   m_ObjectHideFlags: 0

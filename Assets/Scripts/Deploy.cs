@@ -17,7 +17,10 @@ public class Deploy : MonoBehaviour
     [Header("physics settings")]
     [SerializeField] Collider objCollider;
     [SerializeField] Rigidbody objRigidbody;
-    [Header("")]
+    [FormerlySerializedAs("rotatehight")]
+    [Header("Rotate settings")]
+    [SerializeField] float rotateHight = 0.5f;
+    [SerializeField] float sensitivity = 0.5f;
 
     [FormerlySerializedAs("isChild")] [HideInInspector] public bool isStableCheckerChild = false;
     [HideInInspector] public bool isOverLapCheckerChild = false;
@@ -28,7 +31,7 @@ public class Deploy : MonoBehaviour
     private Vector3 currentPos;
     private Vector3 currentObjPos;
     private bool deployedOnce = false;
-    private bool deploypaused = false;
+    private bool isRotating = false;
     private GameObject stableCheckerChildObject;
     private GameObject overLapCheckerChildObject;
     private Collider stableCheckerChildCollider;
@@ -103,15 +106,17 @@ public class Deploy : MonoBehaviour
 
     private void Update()
     {
-        if (isDeploy && !deploypaused)
+        if (isDeploy)
         {
-            MousePosSanp();
+            if(!Rotate())
+            {
+                MousePosSanp();
             
-            if(Input.GetMouseButtonDown(0) && isStable && !isStableChange)
-                DeployEnd();
+                if(Input.GetMouseButtonDown(0) && isStable && !isStableChange)
+                    DeployEnd();
+            }
         }
         ShowStableState();
-        Rotate();
     }
 
     private void ShowStableState()
@@ -158,7 +163,7 @@ public class Deploy : MonoBehaviour
         childStableChecker.ChildDeployEnd();
         this.gameObject.tag = "Ground";
         objCollider.isTrigger = false;
-        deployManager.DeployFinish(this.gameObject);
+        deployManager.DeployFinish(this.gameObject); //TODO 이거 nullreference 뜨는거지 
         
         originalPos = transform.position;
         originalRot = transform.rotation;
@@ -352,10 +357,27 @@ public class Deploy : MonoBehaviour
         return true;
     }
 
-    void Rotate()
+    bool Rotate()
     {
-        //TODO 구현하기!
-        //deploypaused = true;
+        if (Input.GetMouseButtonUp(1))
+        {
+            isRotating = false;
+            transform.position -= Vector3.up * rotateHight;
+        }
+        if(!Input.GetMouseButton(1))
+        {
+            return false; //우클릭 안눌려있으면 걍 끝
+        }
+        if(Input.GetMouseButtonDown(1))
+        {
+            if(!isRotating)
+                transform.position += Vector3.up * rotateHight;
+            isRotating = true;
+        }
+
+        transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity, 0);
+
+        return true;
     }
 
     private void playButtonPressed()

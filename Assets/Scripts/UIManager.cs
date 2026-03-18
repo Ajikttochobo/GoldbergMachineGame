@@ -43,7 +43,8 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < deployManager.deployObjects.Length; i++)
         {
             GameObject button = Instantiate(inventoryButtonPrefab, InventoryPanel.transform);
-            button.GetComponentInChildren<TextMeshProUGUI>().text = deployManager.deployObjects[i].name;
+            button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = deployManager.deployObjects[i].name;
+            button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = deployManager.deployObjects[i].count.ToString();
             button.GetComponent<InventoryButton>().ButtonIndex = i;
             button.GetComponent<InventoryButton>().uiManager = this;
             buttonList.Add(button.GetComponent<InventoryButton>());

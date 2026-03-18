@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,5 +15,11 @@ public class GameManager : MonoBehaviour
     public void MainMenu()
     {
         SceneManager.LoadScene(mainMenu);
+    }
+
+    private void Awake()
+    {
+        UIManager.isGamePlaying = false;
+        Time.timeScale = 1;
     }
 }

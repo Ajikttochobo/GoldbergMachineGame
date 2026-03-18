@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -73,6 +74,8 @@ public class DeployManager : MonoBehaviour
     public void DeployFinish(GameObject obj)
     {
         deployObjects[uiManager.activeInventoryButtonIndex.Value].count--;
+        DeployingObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = deployObjects[uiManager.activeInventoryButtonIndex.Value].count.ToString();
+        //TODO 위에 코드 작동하게!
         DeployingObjectIndex = null;
         DeployingObject = null;
 
